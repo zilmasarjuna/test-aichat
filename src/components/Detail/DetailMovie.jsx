@@ -1,31 +1,36 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { Row, Col, Descriptions, Skeleton } from 'antd'
+import { Descriptions, Modal, Spin } from 'antd'
 
-const DetailMovie = ({ detailMovie }) => {
-  if (detailMovie.isFetching) {
-    return <Skeleton />
-  }
+const DetailMovie = ({ detailMovie, visible, changeVisible }) => {
   return (
-    <Row gutter={20}>
-      <Col span={6}>
-        <img src={detailMovie.data.Poster} class="img-detail" alt="detail-img" />
-      </Col>
-      <Col span={18}>
-        <h2>{detailMovie.data.Title}</h2>
-        <Descriptions>
-          <Descriptions.Item label="Year" span={24}>{detailMovie.data.Year}</Descriptions.Item>
-          <Descriptions.Item label="Country" span={24}>{detailMovie.data.Country}</Descriptions.Item>
-          <Descriptions.Item label="Language" span={24}>{detailMovie.data.Language}</Descriptions.Item>
-          <Descriptions.Item label="Released" span={24}>{detailMovie.data.Released}</Descriptions.Item>
-          <Descriptions.Item label="Writer" span={2}>{detailMovie.data.Writer}</Descriptions.Item>
-        </Descriptions>
-        <p>
-          {detailMovie.data.Plot}
-        </p>
-      </Col>
-    </Row>  
+    <Modal
+      visible={visible}
+      onCancel={() => changeVisible(false)}
+      closable={false}
+      footer={null}
+    > 
+      {
+        detailMovie.isFetching && <div className="loading-cont"><Spin/></div>
+      }
+      {
+        !detailMovie.isFetching && <>
+          <div className="info-poster">
+            <img src={detailMovie.data.Poster} alt={detailMovie.data.Title} />
+          </div>
+          
+          <Descriptions>
+            <Descriptions.Item label="Year" span={24}>{detailMovie.data.Year}</Descriptions.Item>
+            <Descriptions.Item label="Released" span={24}>{detailMovie.data.Released}</Descriptions.Item>
+            <Descriptions.Item label="Director" span={24}>{detailMovie.data.Director}</Descriptions.Item>
+          </Descriptions>
+          <p className="info-text">
+            {detailMovie.data.Plot}
+          </p>
+        </>
+      }
+    </Modal> 
   )
 }
 

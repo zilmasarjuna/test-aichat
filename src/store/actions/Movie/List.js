@@ -16,10 +16,11 @@ export const searchMovieRequest = () => ({
 })
 
 
-export const listMovieSuccess = (data, page) => ({
+export const listMovieSuccess = (data, page, total) => ({
   type: LIST_MOVIE_SUCCESS,
   data,
-  page
+  page,
+  total
 })
 
 export const listMovieFailure = error => ({
@@ -27,13 +28,13 @@ export const listMovieFailure = error => ({
   error,
 })
 
-export const fetchListMovie = ({ s = 'Batman', page = 1 } = {}) => {
+export const fetchListMovie = ({ s = 'Bat', page = 1 } = {}) => {
   return (dispatch) => {
     dispatch(listMovieRequest())
 
-    return axios.get(`/?apikey=faf7e5bb&s=${s}&page=${page}`).then(res => {
+    return axios.get(`/?apikey=aed66ff4&s=${s}&page=${page}`).then(res => {
       if (res.data.Response === 'True') {
-        dispatch(listMovieSuccess(res.data.Search, page))
+        dispatch(listMovieSuccess(res.data.Search, page, res.data.totalResults))
       } else {
         dispatch(listMovieFailure(res.data.Error))  
       }
@@ -43,13 +44,13 @@ export const fetchListMovie = ({ s = 'Batman', page = 1 } = {}) => {
   }
 }
 
-export const searchListMovie = ({ s = 'Batman' }) => {
+export const searchListMovie = ({ s = '' }) => {
   return (dispatch) => {
     dispatch(searchMovieRequest())
 
     return axios.get(`/?apikey=faf7e5bb&s=${s}&page=1`).then(res => {
       if (res.data.Response === 'True') {
-        dispatch(listMovieSuccess(res.data.Search, 1))
+        dispatch(listMovieSuccess(res.data.Search, 1, res.data.totalResults))
       } else {
         dispatch(listMovieFailure(res.data.Error))  
       }

@@ -36,16 +36,13 @@ export default function list(state = initialState, action) {
       }
   
     case LIST_MOVIE_SUCCESS:
-      // const dataFirst = action.data.splice(0, 5) 
-      // const dataSecond = action.data
 
       return {
         ...state,
         isFetching: false,
         data: action.data,
-        // dataCached: dataSecond,
         error: null,
-        length: action.data.length,
+        length: action.total,
         page: action.page,
         type: LIST_MOVIE_SUCCESS
       }

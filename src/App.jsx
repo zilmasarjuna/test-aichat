@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
 import List from 'containers/List'
-import Detail from 'containers/Detail'
+import Favorit from 'containers/Favorit'
 
 function App() {
   return (
@@ -11,7 +11,7 @@ function App() {
         <React.Suspense fallback="Loading">
           <Switch>
             <Route exact path="/" component={List} />
-            <Route exact path="/movie/:id" component={Detail} />
+            <Route exact path="/favorite" component={Favorit} />
           </Switch>
          </React.Suspense>
       </Router>

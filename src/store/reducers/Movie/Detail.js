@@ -1,7 +1,7 @@
 import {
   DETAIL_MOVIE_REQUEST,
   DETAIL_MOVIE_SUCCESS,
-  DETAIL_MOVIE_FAILURE,
+  DETAIL_MOVIE_FAILURE,zzz
 } from 'store/types'
 
 const initialState = {

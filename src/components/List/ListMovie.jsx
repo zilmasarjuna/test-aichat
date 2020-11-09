@@ -2,91 +2,123 @@
 
 import React, { useState ,useEffect } from 'react'
 import { connect } from 'react-redux'
+import { isEmpty } from 'lodash'
 
 import { fetchListMovie } from 'store/actions/Movie/List'
+import { fetchDetailMovie } from 'store/actions/Movie/Detail'
 
-import { List, Image } from 'antd'
-import { Link } from "react-router-dom"
+import { setMovie, removeMovie } from 'store/actions/Movie/Favorit'
 
-const ListMovie = ({ listMovie, fetchListMovie }) => {
+import { StarFilled } from '@ant-design/icons';
+
+import { Table,  } from 'antd'
+
+import DetailMovie from '../Detail/DetailMovie'
+
+const ListMovie = ({ 
+  listMovie,
+  fetchDetailMovie,
+  fetchListMovie,
+  setMovie,
+  removeMovie,
+  listFavorit, 
+}) => {
   const [ item, changeItem] = useState([])
-  const [ itemSecond, changeSecondItem ] = useState([])
+  const [visible, changeVisible] = useState(false)
 
-  useEffect(() => {
-    changeItem([])
-    changeSecondItem([])
-  }, [])
+
+  const showDetail = (id) => {
+    changeVisible(true)
+    fetchDetailMovie(id)
+  }
+
+  const onChangePage = (page) => {
+    fetchListMovie({
+      page: page.current,
+    })
+  }
 
   useEffect(() => {
     async function getData() {
       if (listMovie.type === 'SEARCH_MOVIE_REQUEST') {
         changeItem([])
-        changeSecondItem([])
       } 
 
       if (listMovie.type === 'LIST_MOVIE_SUCCESS') {
-        if (listMovie.page === 1) {
-          changeItem(item.concat(listMovie.data))
-        } else {
-          const data = {
-            item: listMovie.data
-          }
-          const dataFirst = data.item.splice(0, 5) 
-          const dataSecond = data.item
-          changeItem(item.concat(dataFirst))
-          changeSecondItem(dataSecond)
-        }
+        changeItem(item.concat(listMovie.data))
       }
     }
     getData()
   }, [listMovie])
 
-  useEffect(() => {
-    window.onscroll = function() {
-      if (
-        window.innerHeight + document.documentElement.scrollTop
-        >= document.documentElement.scrollHeight
-      ) {
-        if (listMovie.length === 10) {
-          if (itemSecond.length === 0) {
-            fetchListMovie({page: listMovie.page + 1 })
-          } else {
-            changeItem(item.concat(itemSecond))
-            changeSecondItem([])
-          }
-        }
-      }
+  const column = [{
+    title: 'Title',
+    dataIndex: 'Title',
+    render: (text, data) => {
+      return (
+        <div
+          className="key-title"
+          onClick={() => showDetail(data.imdbID)}
+        >
+          {text}
+        </div>
+      )
     }
-  }, [listMovie.length, itemSecond, item, fetchListMovie])
+  }, {
+    title: 'Year',
+    dataIndex: 'Year'
+  }, {
+    title: 'ImdbID',
+    dataIndex: 'imdbID',
+  }, {
+    title: '',
+    render: (data) => {
+      const listFav = listFavorit.data
+      const isStar = listFav.filter(key => key.imdbID === data.imdbID);
+      if (!isEmpty(isStar)) {
+        return <button
+          className="btn"
+          onClick={() => removeMovie(data)}
+        ><StarFilled style={{ 
+          color: '#f7ff0c',
+          fontSize: '20px' 
+        }} /></button>
+      } else {
+        return <button
+          className="btn"
+          onClick={() => setMovie(data)}
+        >
+          <StarFilled style={{ 
+            fontSize: '20px' 
+          }}/>
+        </button>
+      }
+      
+    }
+  }]
+
   return (
     <div 
       className="wrap-item"
     >
-      <List 
-        itemLayout="vertical"
-        size="large"
-        loading={listMovie.page === 1 && listMovie.isFetching}
-        dataSource={item}
-        rowKey="imdbID"
-        renderItem={item => (
-          <List.Item key={item.imdbID}>
-            <List.Item.Meta
-              avatar={
-                <Image src={item.Poster} className="img-list"/>
-              }
-              title={<Link to={`/movie/${item.imdbID}`}>{item.Title}</Link>}
-              description={item.Year}
-            />
-          </List.Item>
-        )}
+      <Table
+        dataSource={listMovie.data}
+        columns={column}
+        loading={listMovie.isFetching}
+        pagination={{
+          total: listMovie.length,
+          current: listMovie.page
+        }}
+        onChange={onChangePage}
       />
+      <DetailMovie visible={visible} changeVisible={changeVisible} />
     </div>
   )
 }
 
 export default connect(
-  ({ movie_store: { listMovie } }) => ({ 
-    listMovie
+  ({ movie_store: { listMovie, listFavorit, detailMovie } }) => ({ 
+    listMovie, listFavorit, detailMovie
   }),
-  { fetchListMovie }
+  { fetchListMovie, setMovie, fetchDetailMovie, removeMovie }
 )(ListMovie)

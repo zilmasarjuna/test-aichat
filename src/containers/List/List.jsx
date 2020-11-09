@@ -4,7 +4,7 @@ import { Col, Row } from 'antd'
 
 import { fetchListMovie } from 'store/actions/Movie/List'
 
-import { SearchList, ListMovie } from 'components'
+import { SearchList, ListMovie, Header } from 'components'
 
 const List = ({ fetchListMovie }) => {
   useEffect(() => {
@@ -12,24 +12,26 @@ const List = ({ fetchListMovie }) => {
   })
 
   return (
-    <div className="container">
-      <div className="container-list">
-        <div className="title-page">
-          <h2>List Movies</h2>
+    <>
+      <Header />
+      <div className="container">
+        <div className="container-list">
+          <div className="title-page">
+            <h2>List Movies</h2>
+          </div>
+          <div className="body-page">
+            <Row>
+              <Col md={7}>
+                <SearchList />
+              </Col>
+              <Col md={24}>
+                <ListMovie />
+              </Col>
+            </Row>
+          </div>
         </div>
-        <div className="body-page">
-          <Row>
-            <Col md={7}>
-              <SearchList />
-            </Col>
-            <Col md={24}>
-              <ListMovie />
-            </Col>
-          </Row>
-        </div>
-        
       </div>
-    </div>
+    </>
   )
 }
 

@@ -1,5 +1,5 @@
 .container-list {
-  margin: 30px;
+  margin: 80px 30px 30px;
 
   .wrap-item {
     margin-top: 30px;
@@ -16,4 +16,38 @@
   .img-detail {
     width: 100%;
   }
+}
+
+.btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.info-poster {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.ant-descriptions-item {
+  padding-bottom: 0 !important;
+}
+
+.info-text {
+  text-indent: 30px;
+  margin-top: 20px;
+}
+
+.ant-table-thead > tr > th {
+  background: #001529;
+  color: #fff;
+}
+
+.key-title {
+  cursor: pointer;
 }
